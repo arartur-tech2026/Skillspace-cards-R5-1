@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Право (Часть 1) – Карточки</title>
   <style>
     :root {
@@ -32,10 +32,43 @@
     }
 
     * { box-sizing: border-box; }
-    body { margin: 0; padding: 0; }
+    
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: var(--bg-color);
+      overscroll-behavior: none;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    @supports (-webkit-touch-callout: none) {
+      html, body {
+        height: -webkit-fill-available;
+      }
+    }
+
+    :-webkit-full-screen {
+      width: 100% !important;
+      height: 100% !important;
+      background-color: var(--bg-color);
+    }
+
+    .start-screen-overlay, .app-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
 
     .app-container {
-      min-height: 100vh;
       background: linear-gradient(135deg, var(--bg-color) 0%, var(--card-front-bg) 100%);
       color: var(--text-main);
       font-family: system-ui, -apple-system, sans-serif;
@@ -43,7 +76,71 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 1.5rem 1rem;
+      padding: 1rem;
+      z-index: 1;
+    }
+    @media (min-width: 768px) {
+      .app-container { padding: 1.5rem 1rem; }
+    }
+
+    .start-screen-overlay {
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      gap: 3rem;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+    [data-theme="dark"] .start-screen-overlay {
+      background-color: #0f172a;
+    }
+    .start-screen-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    
+    .start-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #1e293b;
+      text-align: center;
+      margin: 0;
+      padding: 0 1rem;
+    }
+    @media (min-width: 768px) {
+      .start-title { font-size: 3rem; }
+    }
+    [data-theme="dark"] .start-title {
+      color: #f8fafc;
+    }
+
+    .btn-start {
+      font-size: 1.75rem;
+      font-weight: 800;
+      padding: 1.5rem 4rem;
+      border-radius: 1.5rem;
+      background: var(--accent);
+      color: #ffffff;
+      border: none;
+      box-shadow: 0 10px 30px var(--shadow-color), 0 0 0 0 rgba(37, 99, 235, 0.4);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      animation: pulse-start 2s infinite;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-start:hover {
+      transform: scale(1.05) translateY(-5px);
+      background: var(--accent-hover);
+    }
+    @keyframes pulse-start {
+      0% { box-shadow: 0 10px 30px var(--shadow-color), 0 0 0 0 rgba(37, 99, 235, 0.4); }
+      70% { box-shadow: 0 10px 30px var(--shadow-color), 0 0 0 20px rgba(37, 99, 235, 0); }
+      100% { box-shadow: 0 10px 30px var(--shadow-color), 0 0 0 0 rgba(37, 99, 235, 0); }
     }
 
     /* Header */
@@ -52,19 +149,28 @@
       max-width: 800px;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      flex-shrink: 0;
     }
     @media (min-width: 768px) {
       .header {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+        margin-bottom: 1.5rem;
       }
     }
 
-    .header-title { font-size: 1.5rem; font-weight: 700; margin: 0 0 0.5rem 0; }
-    .header-subtitle { font-size: 0.875rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem; margin: 0; }
+    .header-title { font-size: 1.1rem; line-height: 1.2; font-weight: 700; margin: 0 0 0.25rem 0; }
+    @media (min-width: 768px) {
+      .header-title { font-size: 1.5rem; margin: 0 0 0.5rem 0; }
+    }
+
+    .header-subtitle { font-size: 0.7rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.35rem; margin: 0; line-height: 1.2; }
+    @media (min-width: 768px) {
+      .header-subtitle { font-size: 0.875rem; gap: 0.5rem; }
+    }
 
     .header-actions {
       display: flex;
@@ -72,13 +178,11 @@
       gap: 0.75rem;
     }
 
-    /* Typography & Icons */
     .icon { width: 1.25rem; height: 1.25rem; flex-shrink: 0; }
     .icon-sm { width: 1rem; height: 1rem; }
     .icon-lg { width: 1.75rem; height: 1.75rem; }
     .text-success { color: var(--success); }
 
-    /* Buttons */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -93,11 +197,11 @@
       font-weight: 500;
       cursor: pointer;
       transition: all 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
     }
     .btn:hover { border-color: var(--accent); }
     .btn-icon { padding: 0.5rem; border-radius: 0.5rem; }
     
-    /* Синяя кнопка для полноэкранного режима */
     .btn.btn-blue {
       background-color: var(--accent);
       color: #ffffff;
@@ -108,16 +212,21 @@
       border-color: var(--accent-hover);
     }
 
-    /* Horizontal Scroll Tabs */
+    /* Tabs */
     .tabs-wrapper {
       width: 100%;
       max-width: 800px;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
       scrollbar-width: none;
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
+      flex-shrink: 0;
     }
     .tabs-wrapper::-webkit-scrollbar { display: none; }
+    @media (min-width: 768px) {
+      .tabs-wrapper { margin-bottom: 1.5rem; }
+    }
 
     .tabs {
       display: flex;
@@ -134,6 +243,7 @@
       cursor: pointer;
       font-size: 0.875rem;
       transition: all 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
     }
     .tab.active {
       background: var(--accent);
@@ -141,32 +251,52 @@
       border-color: var(--accent);
     }
 
-    /* Status text */
+    #main-content {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-grow: 1;
+      justify-content: flex-start;
+      min-height: 0;
+    }
+
     .status-text {
       font-size: 0.875rem;
       color: var(--text-muted);
       font-weight: 500;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
       letter-spacing: 0.05em;
+      flex-shrink: 0;
     }
 
     /* Card */
     .card-wrapper {
       width: 100%;
       max-width: 600px;
-      height: 320px;
+      flex: 1 1 auto;
+      min-height: 200px;
+      max-height: 320px;
       perspective: 1000px;
       cursor: pointer;
-      margin-bottom: 2.5rem;
+      margin-bottom: 1.5rem;
+      user-select: none;
+      will-change: transform;
+      -webkit-tap-highlight-color: transparent;
     }
-    @media (min-width: 768px) { .card-wrapper { height: 384px; } }
+    @media (min-width: 768px) { 
+      .card-wrapper { 
+        max-height: 384px; 
+        margin-bottom: 2rem;
+      } 
+    }
 
     .card-inner {
       position: relative;
       width: 100%;
       height: 100%;
       text-align: center;
-      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       transform-style: preserve-3d;
       box-shadow: 0 10px 25px var(--shadow-color);
       border-radius: 1rem;
@@ -181,14 +311,28 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 4rem 1.5rem;
+      padding: 3rem 1rem; 
       border-radius: 1rem;
       border-top: 4px solid;
       transition: background-color 0.3s ease, border-color 0.3s ease;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain; /* Блокирует передачу скролла родителям */
       scrollbar-width: thin;
       scrollbar-color: var(--border-color) transparent;
+    }
+    @media (min-width: 768px) {
+      .card-face { padding: 4rem 1.5rem; }
+    }
+
+    /* Безопасное центрирование текста */
+    .card-face::before {
+      content: "";
+      margin-top: auto;
+    }
+    .card-face::after {
+      content: "";
+      margin-bottom: auto;
     }
 
     .card-face::-webkit-scrollbar { width: 6px; }
@@ -207,8 +351,8 @@
 
     .card-label {
       position: absolute;
-      top: 1.25rem;
-      left: 1.25rem;
+      top: 1rem;
+      left: 1rem;
       font-size: 0.75rem;
       font-weight: 700;
       text-transform: uppercase;
@@ -218,29 +362,56 @@
     .card-back .card-label { color: var(--success); }
 
     .card-content { 
-      font-size: 1.25rem; 
+      font-size: 1.15rem; 
       font-weight: 600; 
       line-height: 1.5; 
       width: 100%;
-      margin: 0;
+      text-align: center;
       word-wrap: break-word;
       overflow-wrap: break-word;
-      transition: font-size 0.2s ease;
+      flex-shrink: 0; 
+      margin: 0;
     }
     @media (min-width: 768px) { .card-content { font-size: 1.5rem; } }
     .card-back .card-content { font-weight: 500; color: var(--text-main); }
 
     .card-hint {
       position: absolute;
-      bottom: 1.25rem;
+      bottom: 1rem;
       font-size: 0.875rem;
       color: var(--text-muted);
       animation: pulse 2s infinite;
     }
 
-    /* Лаконичная подсказка с номером темы */
+    /* Подсказки при свайпе (Tinder-like) */
+    .swipe-badge {
+      position: absolute;
+      top: 2rem;
+      padding: 0.5rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: 800;
+      font-size: 1.5rem;
+      text-transform: uppercase;
+      z-index: 20;
+      opacity: 0;
+      pointer-events: none;
+      letter-spacing: 0.1em;
+    }
+    .swipe-badge-left {
+      right: 2rem;
+      color: #ef4444;
+      border: 4px solid #ef4444;
+      transform: rotate(15deg);
+    }
+    .swipe-badge-right {
+      left: 2rem;
+      color: #10b981;
+      border: 4px solid #10b981;
+      transform: rotate(-15deg);
+    }
+
     .card-topic-hint {
-      margin-top: 1.5rem;
+      margin-top: 1rem;
       padding-top: 1rem;
       border-top: 1px dashed var(--border-color);
       font-size: 0.875rem;
@@ -252,11 +423,7 @@
       width: 100%;
       justify-content: center;
       text-align: center;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+      flex-shrink: 0;
     }
 
     /* Controls */
@@ -264,8 +431,10 @@
       display: flex;
       align-items: center;
       gap: 1rem;
+      flex-shrink: 0;
+      margin-bottom: 0.5rem;
     }
-    @media (min-width: 768px) { .controls { gap: 1.5rem; } }
+    @media (min-width: 768px) { .controls { gap: 1.5rem; margin-bottom: 1rem; } }
 
     .btn-control {
       display: flex;
@@ -277,6 +446,7 @@
       color: var(--text-main);
       cursor: pointer;
       transition: all 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
     }
     .btn-control:hover { transform: scale(1.05); border-color: var(--accent); }
 
@@ -308,7 +478,6 @@
 </head>
 <body>
 
-  <!-- Библиотека inline SVG-иконок -->
   <svg style="display: none;">
     <defs>
       <symbol id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -363,14 +532,20 @@
     </defs>
   </svg>
 
-  <div class="app-container">
-    <!-- Шапка -->
+  <!-- Чистый стартовый экран -->
+  <div class="start-screen-overlay" id="start-screen">
+    <h1 class="start-title">Раздел 5. Право (Часть 1)</h1>
+    <button class="btn-start" id="btn-big-start">Начать</button>
+  </div>
+
+  <!-- Основной контент -->
+  <div class="app-container" id="app-container">
     <div class="header">
       <div>
         <h1 class="header-title">Раздел 5. Право (Часть 1)</h1>
         <p class="header-subtitle" id="header-subtitle">
           <svg class="icon icon-sm text-success"><use href="#icon-check-circle"></use></svg>
-          <span id="file-status-text">Встроена полная база: раздел 5, часть 1 (82 термина)</span>
+          <span id="file-status-text">Встроена полная база: раздел 5, часть 1 (82 карточки)</span>
         </p>
       </div>
       
@@ -378,7 +553,6 @@
         <button class="btn btn-icon" id="btn-theme" title="Переключить тему">
           <svg class="icon"><use id="theme-icon-use" href="#icon-moon"></use></svg>
         </button>
-        <!-- Синяя кнопка для перехода в полноэкранный режим -->
         <button class="btn btn-icon btn-blue" id="btn-fullscreen" title="Полноэкранный режим">
           <svg class="icon"><use id="fullscreen-icon-use" href="#icon-maximize"></use></svg>
         </button>
@@ -390,7 +564,6 @@
       </div>
     </div>
 
-    <!-- Навигация (вкладки) -->
     <div class="tabs-wrapper">
       <div class="tabs" id="tabs-container">
         <button class="tab active" data-tab="all" id="tab-all">Все термины (0)</button>
@@ -399,11 +572,12 @@
       </div>
     </div>
 
-    <!-- Карточка и элементы управления -->
-    <div id="main-content" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+    <div id="main-content">
       <div class="status-text" id="status-text">Карточка 1 из 0</div>
 
       <div class="card-wrapper" id="card-wrapper">
+        <div class="swipe-badge swipe-badge-left" id="badge-left">Повторить</div>
+        <div class="swipe-badge swipe-badge-right" id="badge-right">Выучил</div>
         <div class="card-inner">
           <div class="card-face card-front">
             <span class="card-label">Вопрос</span>
@@ -434,14 +608,21 @@
       </div>
     </div>
 
-    <!-- Пустое состояние -->
     <div class="empty-state" id="empty-state">
       В этой категории пока нет карточек.
     </div>
   </div>
 
   <script>
-    // База карточек по разделу 5, часть 1 (82 термина)
+    // Жесткая блокировка системного скролла для предотвращения bounce-эффекта
+    document.addEventListener('touchmove', function(e) {
+      const isScrollable = e.target.closest('.card-face, .tabs-wrapper');
+      if (!isScrollable) {
+        if (e.cancelable) e.preventDefault();
+      }
+    }, { passive: false });
+
+    // База карточек
     const defaultCards = [
       { id: '1', topic: 'Тема 1. ПОНЯТИЕ И ПРИЗНАКИ ПРАВА', question: 'Что такое право?', answer: 'Это система общеобязательных, формально определенных норм, установленных и охраняемых государством.' },
       { id: '2', topic: 'Тема 1. ПОНЯТИЕ И ПРИЗНАКИ ПРАВА', question: 'Какова главная цель права?', answer: 'Регулирование общественных отношений и поддержание порядка в государстве.' },
@@ -504,7 +685,7 @@
       { id: '59', topic: 'Тема 6. СИСТЕМА ПРАВА РОССИЙКОЙ ФЕДЕРАЦИИ', question: 'Что такое материальное право?', answer: 'Отрасли права, которые непосредственно регулируют общественные отношения (устанавливают права и обязанности).' },
       { id: '60', topic: 'Тема 7. КОНСТИТУЦИОННОЕ ПРАВО', question: 'Что такое конституционное право?', answer: 'Ведущая отрасль права, закрепляющая основы конституционного строя, права и свободы граждан.' },
       { id: '61', topic: 'Тема 7. КОНСТИТУЦИОННОЕ ПРАВО', question: 'Что такое Конституция?', answer: 'Основной закон государства, обладающий высшей юридической силой и прямым действием.' },
-      { id: '62', topic: 'Тема 7. КОНСТИТУЦИОННОЕ ПРАВО', question: 'В каком году была принята действующая Конституция РФ?', answer: 'В 1993 году (на всенародном голосовании).' },
+      { id: '62', topic: 'Тема 7. КОНСТИТУЦИОННОЕ ПРАВО', question: 'В каком году была принята действу Конституция РФ?', answer: 'В 1993 году (на всенародном голосовании).' },
       { id: '63', topic: 'Тема 7. КОНСТИТУЦИОННОЕ ПРАВО', question: 'Что означает характеристика РФ как демократического государства?', answer: 'Единственным источником власти в стране является ее многонациональный народ.' },
       { id: '64', topic: 'Тема 7. КОНСТИТУЦИОННОЕ ПРАВО', question: 'Что означает характеристика РФ как социального государства?', answer: 'Политика государства направлена на создание условий, обеспечивающих достойную жизнь и свободное развитие человека.' },
       { id: '65', topic: 'Тема 7. КОНСТИТУЦИОННОЕ ПРАВО', question: 'Что означает характеристика РФ как светского государства?', answer: 'Никакая религия не может устанавливаться в качестве государственной или обязательной.' },
@@ -527,7 +708,6 @@
       { id: '82', topic: 'Тема 8. СЕМЕЙНОЕ ПРАВО', question: 'В каких случаях расторжение брака производится только через суд?', answer: 'При наличии общих несовершеннолетних детей или при отсутствии согласия одного из супругов.' }
     ];
 
-    // Состояние приложения
     let cards = [...defaultCards];
     let learnedIds = new Set();
     let activeTab = 'all';
@@ -535,9 +715,13 @@
     let isFlipped = false;
     let theme = 'light';
 
-    // DOM-элементы
     const els = {
+      startScreen: document.getElementById('start-screen'),
+      btnBigStart: document.getElementById('btn-big-start'),
+      appContainer: document.getElementById('app-container'),
       cardWrapper: document.getElementById('card-wrapper'),
+      badgeLeft: document.getElementById('badge-left'),
+      badgeRight: document.getElementById('badge-right'),
       cardQuestion: document.getElementById('card-question'),
       cardAnswer: document.getElementById('card-answer'),
       cardTopicHint: document.getElementById('card-topic-hint'),
@@ -560,23 +744,86 @@
       btnShuffle: document.getElementById('btn-shuffle')
     };
 
-    // Функция масштабирования текста под размер карточки
-    function scaleTextToFit() {
-      requestAnimationFrame(() => {
-        els.cardQuestion.style.fontSize = '';
-        els.cardAnswer.style.fontSize = '';
+    function requestFullScreenSafe(element) {
+      try {
+        if (element.requestFullscreen) {
+          element.requestFullscreen().catch(err => console.warn('Fullscreen err:', err));
+        } else if (element.webkitRequestFullscreen) {
+          element.webkitRequestFullscreen();
+        } else if (element.msRequestFullscreen) {
+          element.msRequestFullscreen();
+        }
+      } catch (e) {
+        console.warn('API не поддерживается:', e);
+      }
+    }
 
+    els.btnBigStart.addEventListener('click', () => {
+      requestFullScreenSafe(document.documentElement);
+      els.startScreen.classList.add('hidden');
+      updateUI();
+      scaleTextToFit();
+    });
+
+    els.btnFullscreen.addEventListener('click', () => {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        requestFullScreenSafe(document.documentElement);
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    });
+
+    function updateFullscreenIcon() {
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        els.fullscreenIconUse.setAttribute('href', '#icon-minimize');
+      } else {
+        els.fullscreenIconUse.setAttribute('href', '#icon-maximize');
+      }
+    }
+    
+    document.addEventListener('fullscreenchange', updateFullscreenIcon);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenIcon);
+
+    // Новейшая супер-надежная функция масштабирования текста
+    function scaleTextToFit() {
+      if (els.startScreen.classList.contains('hidden') === false) return;
+      
+      requestAnimationFrame(() => {
         const frontFace = document.querySelector('.card-front');
         const backFace = document.querySelector('.card-back');
 
         const fitText = (container, textElement) => {
-          let fontSize = parseFloat(window.getComputedStyle(textElement).fontSize);
-          const minFontSize = 14; 
-
-          while (container.scrollHeight > container.clientHeight && fontSize > minFontSize) {
+          if (!container || !textElement || container.clientHeight === 0) return;
+          
+          // Временно отключаем 3D-переворот, чтобы получить 100% точные цифры от браузера
+          const oldTransform = container.style.transform;
+          const oldTransition = container.style.transition;
+          
+          container.style.transition = 'none';
+          container.style.transform = 'none';
+          
+          // Базовый размер
+          let fontSize = window.innerWidth >= 768 ? 24 : 18.4;
+          textElement.style.fontSize = fontSize + 'px';
+          
+          const minFontSize = 12; 
+          let safety = 50; 
+          
+          // Измеряем физическое переполнение контейнера с учетом всех паддингов и подсказок.
+          // Если контент не влезает (scrollHeight > clientHeight) - сжимаем шрифт.
+          while (container.scrollHeight > container.clientHeight + 2 && fontSize > minFontSize && safety > 0) {
             fontSize -= 0.5;
             textElement.style.fontSize = fontSize + 'px';
+            safety--;
           }
+
+          // Возвращаем исходное состояние карточки (с переворотом и анимациями)
+          container.style.transform = oldTransform;
+          container.style.transition = oldTransition;
         };
 
         fitText(frontFace, els.cardQuestion);
@@ -586,7 +833,6 @@
 
     window.addEventListener('resize', scaleTextToFit);
 
-    // Фильтрация
     function getFilteredCards() {
       return cards.filter(card => {
         if (activeTab === 'learned') return learnedIds.has(card.id);
@@ -595,7 +841,6 @@
       });
     }
 
-    // Обновление интерфейса
     function updateUI() {
       els.tabAll.textContent = `Все термины (${cards.length})`;
       els.tabLearning.textContent = `Осталось выучить (${cards.length - learnedIds.size})`;
@@ -617,11 +862,9 @@
         els.cardAnswer.textContent = currentCard.answer;
         els.statusText.textContent = `Карточка ${currentIndex + 1} из ${filtered.length}`;
 
-        // Логика лаконичной подсказки
         if (currentCard.topic) {
           const match = currentCard.topic.match(/^(Тема\s*\d+\.?)/i);
           const shortTopic = match ? match[1] : currentCard.topic;
-          
           els.cardTopicHint.innerHTML = `<svg class="icon icon-sm"><use href="#icon-book"></use></svg> <span>${shortTopic}</span>`;
           els.cardTopicHint.style.display = 'flex';
         } else {
@@ -640,7 +883,6 @@
       }
     }
 
-    // Обработчики вкладок
     function switchTab(tabId) {
       activeTab = tabId;
       currentIndex = 0;
@@ -657,13 +899,163 @@
     els.tabLearning.addEventListener('click', () => switchTab('learning'));
     els.tabLearned.addEventListener('click', () => switchTab('learned'));
 
-    // Переворот карточки
-    els.cardWrapper.addEventListener('click', () => {
+    let startX = 0, startY = 0, currentX = 0;
+    let isDragging = false;
+    let hasDragged = false;
+    let isScrolling = false;
+    let wasSwiped = false; 
+
+    function handleDragStart(clientX, clientY) {
+      isDragging = true;
+      hasDragged = false;
+      isScrolling = false;
+      wasSwiped = false;
+      startX = clientX;
+      startY = clientY;
+      currentX = startX;
+      els.cardWrapper.style.transition = 'none';
+    }
+
+    function handleDragMove(clientX, clientY, e) {
+      if (!isDragging) return;
+      
+      currentX = clientX;
+      const deltaX = currentX - startX;
+      const deltaY = clientY - startY;
+
+      if (!hasDragged && !isScrolling) {
+        if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 5) {
+          isScrolling = true;
+          isDragging = false; 
+          els.cardWrapper.style.transition = 'transform 0.25s ease';
+          els.cardWrapper.style.transform = 'translateX(0) rotate(0)';
+          return;
+        }
+        if (Math.abs(deltaX) > 5) {
+          hasDragged = true;
+        }
+      }
+
+      if (isScrolling) return;
+
+      if (hasDragged) {
+        if (e.cancelable) e.preventDefault(); 
+        
+        wasSwiped = true;
+        const rotate = deltaX * 0.05;
+        els.cardWrapper.style.transform = `translateX(${deltaX}px) rotate(${rotate}deg)`;
+        
+        if (deltaX > 20) {
+          els.badgeRight.style.opacity = Math.min(deltaX / 100, 1);
+          els.badgeLeft.style.opacity = 0;
+        } else if (deltaX < -20) {
+          els.badgeLeft.style.opacity = Math.min(Math.abs(deltaX) / 100, 1);
+          els.badgeRight.style.opacity = 0;
+        } else {
+          els.badgeRight.style.opacity = 0;
+          els.badgeLeft.style.opacity = 0;
+        }
+      }
+    }
+
+    function handleDragEnd() {
+      if (!isDragging) return;
+      isDragging = false;
+      
+      if (isScrolling) return;
+
+      const deltaX = currentX - startX;
+      
+      els.cardWrapper.style.transition = 'transform 0.3s ease-out';
+
+      const threshold = Math.max(window.innerWidth * 0.25, 80);
+
+      if (hasDragged) {
+        if (deltaX > threshold) {
+          handleSwipe('right');
+        } else if (deltaX < -threshold) {
+          handleSwipe('left');
+        } else {
+          els.cardWrapper.style.transform = 'translateX(0) rotate(0)';
+          els.badgeRight.style.opacity = 0;
+          els.badgeLeft.style.opacity = 0;
+        }
+      }
+    }
+
+    els.cardWrapper.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return;
+      handleDragStart(e.clientX, e.clientY);
+    });
+    window.addEventListener('mousemove', (e) => {
+      handleDragMove(e.clientX, e.clientY, e);
+    }, { passive: false });
+    window.addEventListener('mouseup', handleDragEnd);
+
+    els.cardWrapper.addEventListener('touchstart', (e) => {
+      handleDragStart(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: true });
+    
+    window.addEventListener('touchmove', (e) => {
+      handleDragMove(e.touches[0].clientX, e.touches[0].clientY, e);
+    }, { passive: false });
+    
+    window.addEventListener('touchend', handleDragEnd);
+    window.addEventListener('touchcancel', handleDragEnd);
+
+    function handleSwipe(direction) {
+      const filtered = getFilteredCards();
+      if (filtered.length === 0) return;
+      const currentCard = filtered[currentIndex];
+
+      const throwX = direction === 'right' ? window.innerWidth : -window.innerWidth;
+      const rotate = direction === 'right' ? 30 : -30;
+      els.cardWrapper.style.transform = `translateX(${throwX}px) rotate(${rotate}deg)`;
+      
+      setTimeout(() => {
+        if (direction === 'right') {
+          learnedIds.add(currentCard.id);
+        } else {
+          learnedIds.delete(currentCard.id);
+        }
+
+        const newFiltered = cards.filter(c => {
+          if (activeTab === 'learned') return learnedIds.has(c.id);
+          if (activeTab === 'learning') return !learnedIds.has(c.id);
+          return true;
+        });
+
+        if (newFiltered.length > 0) {
+          if (newFiltered.find(c => c.id === currentCard.id)) {
+            currentIndex = (currentIndex + 1) % newFiltered.length;
+          } else {
+            if (currentIndex >= newFiltered.length) currentIndex = 0;
+          }
+        } else {
+          currentIndex = 0;
+        }
+
+        isFlipped = false;
+        els.cardWrapper.classList.remove('flipped');
+        
+        els.cardWrapper.style.transition = 'none';
+        els.cardWrapper.style.transform = 'translateX(0) rotate(0)';
+        els.badgeRight.style.opacity = 0;
+        els.badgeLeft.style.opacity = 0;
+        
+        updateUI();
+      }, 300);
+    }
+
+    els.cardWrapper.addEventListener('click', (e) => {
+      if (wasSwiped) {
+        e.preventDefault();
+        return;
+      }
       isFlipped = !isFlipped;
       els.cardWrapper.classList.toggle('flipped', isFlipped);
     });
 
-    // Навигация
     els.btnNext.addEventListener('click', () => {
       const filtered = getFilteredCards();
       if (filtered.length <= 1) return;
@@ -711,7 +1103,6 @@
       updateUI();
     });
 
-    // Темная тема
     els.btnTheme.addEventListener('click', () => {
       theme = theme === 'light' ? 'dark' : 'light';
       if (theme === 'dark') {
@@ -723,38 +1114,6 @@
       }
     });
 
-    // Полноэкранный режим
-    function toggleFullscreen() {
-      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-        const elem = document.documentElement;
-        if (elem.requestFullscreen) {
-          elem.requestFullscreen();
-        } else if (elem.webkitRequestFullscreen) {
-          elem.webkitRequestFullscreen();
-        }
-      } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-          document.webkitExitFullscreen();
-        }
-      }
-    }
-
-    els.btnFullscreen.addEventListener('click', toggleFullscreen);
-
-    function updateFullscreenIcon() {
-      if (document.fullscreenElement || document.webkitFullscreenElement) {
-        els.fullscreenIconUse.setAttribute('href', '#icon-minimize');
-      } else {
-        els.fullscreenIconUse.setAttribute('href', '#icon-maximize');
-      }
-    }
-    
-    document.addEventListener('fullscreenchange', updateFullscreenIcon);
-    document.addEventListener('webkitfullscreenchange', updateFullscreenIcon);
-
-    // Загрузка файла
     els.btnUpload.addEventListener('click', () => els.fileInput.click());
     
     els.fileInput.addEventListener('change', (e) => {
