@@ -83,6 +83,7 @@
       .app-container { padding: 1.5rem 1rem; }
     }
 
+    /* Адаптивный стартовый экран */
     .start-screen-overlay {
       background-color: #ffffff;
       display: flex;
@@ -90,7 +91,7 @@
       align-items: center;
       justify-content: center;
       z-index: 9999;
-      gap: 3rem;
+      gap: 1.5rem;
       transition: opacity 0.4s ease, visibility 0.4s ease;
     }
     [data-theme="dark"] .start-screen-overlay {
@@ -103,7 +104,7 @@
     }
     
     .start-title {
-      font-size: 2rem;
+      font-size: 1.25rem;
       font-weight: 800;
       color: #1e293b;
       text-align: center;
@@ -112,16 +113,17 @@
     }
     @media (min-width: 768px) {
       .start-title { font-size: 3rem; }
+      .start-screen-overlay { gap: 3rem; }
     }
     [data-theme="dark"] .start-title {
       color: #f8fafc;
     }
 
     .btn-start {
-      font-size: 1.75rem;
+      font-size: 1rem;
       font-weight: 800;
-      padding: 1.5rem 4rem;
-      border-radius: 1.5rem;
+      padding: 0.8rem 2.5rem;
+      border-radius: 1rem;
       background: var(--accent);
       color: #ffffff;
       border: none;
@@ -132,6 +134,13 @@
       letter-spacing: 0.1em;
       animation: pulse-start 2s infinite;
       -webkit-tap-highlight-color: transparent;
+    }
+    @media (min-width: 768px) {
+      .btn-start {
+        font-size: 1.75rem;
+        padding: 1.5rem 4rem;
+        border-radius: 1.5rem;
+      }
     }
     .btn-start:hover {
       transform: scale(1.05) translateY(-5px);
@@ -527,13 +536,11 @@
     </defs>
   </svg>
 
-  <!-- Чистый стартовый экран -->
   <div class="start-screen-overlay" id="start-screen">
     <h1 class="start-title">Раздел 5. Право (Часть 1)</h1>
     <button class="btn-start" id="btn-big-start">Начать</button>
   </div>
 
-  <!-- Основной контент -->
   <div class="app-container" id="app-container">
     <div class="header">
       <div>
@@ -675,7 +682,7 @@
       { id: '59', topic: 'Тема 6. СИСТЕМА ПРАВА РОССИЙКОЙ ФЕДЕРАЦИИ', question: 'Что такое материальное право?', answer: 'Отрасли права, которые непосредственно регулируют общественные отношения (устанавливают права и обязанности).' },
       { id: '60', topic: 'Тема 7. КОНСТИТУЦИОННОЕ ПРАВО', question: 'Что такое конституционное право?', answer: 'Ведущая отрасль права, закрепляющая основы конституционного строя, права и свободы граждан.' },
       { id: '61', topic: 'Тема 7. КОНСТИТУЦИОННОЕ ПРАВО', question: 'Что такое Конституция?', answer: 'Основной закон государства, обладающий высшей юридической силой и прямым действием.' },
-      { id: '62', topic: 'Тема 7. КОНСТИТУЦИОННОЕ ПРАВО', question: 'В каком году была принята действу Конституция РФ?', answer: 'В 1993 году (на всенародном голосовании).' },
+      { id: '62', topic: 'Тема 7. КОНСТИТУЦИОННОЕ ПРАВО', question: 'В каком году была принята действующая Конституция РФ?', answer: 'В 1993 году (на всенародном голосовании).' },
       { id: '63', topic: 'Тема 7. КОНСТИТУЦИОННОЕ ПРАВО', question: 'Что означает характеристика РФ как демократического государства?', answer: 'Единственным источником власти в стране является ее многонациональный народ.' },
       { id: '64', topic: 'Тема 7. КОНСТИТУЦИОННОЕ ПРАВО', question: 'Что означает характеристика РФ как социального государства?', answer: 'Политика государства направлена на создание условий, обеспечивающих достойную жизнь и свободное развитие человека.' },
       { id: '65', topic: 'Тема 7. КОНСТИТУЦИОННОЕ ПРАВО', question: 'Что означает характеристика РФ как светского государства?', answer: 'Никакая религия не может устанавливаться в качестве государственной или обязательной.' },
